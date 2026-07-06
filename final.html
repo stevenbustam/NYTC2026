@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NYTC 2026 – Championship Codex</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #ffffff;
+    --cream: #fdfaf3;
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --gold-pale: #faeec8;
+    --sky: #a8d8f0;
+    --sky-deep: #5bb8e8;
+    --teal: #4ecdc4;
+    --rose: #f7a8b8;
+    --violet: #b8a8f0;
+    --ink: #1a1a2e;
+    --ink-mid: #2d2d4e;
+    --glow: rgba(201,168,76,0.35);
+    --glow-sky: rgba(91,184,232,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: 'Lato', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform 0.1s ease;
+    box-shadow: 0 0 12px var(--gold), 0 0 24px var(--gold-light);
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: all 0.18s ease;
+    opacity: 0.6;
+  }
+
+  /* ── PARTICLES ── */
+  #particles {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) scale(1); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 0.4; }
+    100% { transform: translateY(-100vh) scale(0.4); opacity: 0; }
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(165deg, #f8f4ea 0%, #ffffff 40%, #e8f4fd 80%, #f0e8ff 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    padding: 40px 20px;
+  }
+
+  .hero-bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.2);
+    animation: pulse-ring 6s ease-in-out infinite;
+  }
+  .hero-bg-circle:nth-child(1) { width: 500px; height: 500px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: 0s; }
+  .hero-bg-circle:nth-child(2) { width: 700px; height: 700px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: 1s; }
+  .hero-bg-circle:nth-child(3) { width: 900px; height: 900px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: 2s; }
+
+  @keyframes pulse-ring {
+    0%, 100% { opacity: 0.15; transform: translate(-50%,-50%) scale(1); }
+    50%       { opacity: 0.4;  transform: translate(-50%,-50%) scale(1.03); }
+  }
+
+  /* Rune decoration */
+  .hero-rune {
+    position: absolute;
+    font-size: 120px;
+    opacity: 0.04;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    animation: rune-spin 30s linear infinite;
+    user-select: none;
+  }
+  .hero-rune.top-left  { top: -20px; left: -20px; }
+  .hero-rune.top-right { top: -20px; right: -20px; animation-direction: reverse; }
+  .hero-rune.bot-left  { bottom: -20px; left: -20px; animation-direction: reverse; }
+  .hero-rune.bot-right { bottom: -20px; right: -20px; }
+  @keyframes rune-spin { to { transform: rotate(360deg); } }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    color: #fff;
+    font-family: 'Cinzel', serif;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    padding: 6px 20px;
+    border-radius: 2px;
+    margin-bottom: 28px;
+    animation: fadeDown 1s ease both;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+  }
+  .badge::before, .badge::after { content: '✦'; }
+
+  .hero h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(28px, 6vw, 72px);
+    font-weight: 900;
+    text-align: center;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #1a1a2e 0%, #4a3f8a 40%, #1a1a2e 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    animation: fadeDown 1s 0.2s ease both;
+  }
+
+  .hero-sub {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(12px, 2vw, 18px);
+    color: var(--gold);
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    animation: fadeDown 1s 0.4s ease both;
+  }
+
+  .hero-divider {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 32px;
+    animation: fadeDown 1s 0.5s ease both;
+  }
+  .hero-divider-line {
+    width: 80px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold));
+  }
+  .hero-divider-line.right { background: linear-gradient(90deg, var(--gold), transparent); }
+  .hero-divider span {
+    font-family: 'Cinzel', serif;
+    font-size: 11px; letter-spacing: 4px;
+    color: var(--gold); text-transform: uppercase;
+  }
+
+  .email {
+    font-family: 'Lato', sans-serif;
+    font-size: 15px; line-height: 1.9; color: #555;
+    margin-top: 0px;
+    margin-bottom: 0;
+    letter-spacing: 1px;
+    opacity: 100%;
+    animation: fadeDown 1s 0.6s ease both;
+  }
+
+  .hero-desc {
+    max-width: 580px; text-align: center;
+    font-size: 15px; line-height: 1.9; color: #555;
+    font-weight: 300;
+    animation: fadeDown 1s 0.6s ease both;
+    margin-bottom: 50px;
+    margin-top: 25px;
+  }
+
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Cinzel', serif;
+    font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--ink);
+    border: 1px solid var(--gold);
+    padding: 14px 36px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative; overflow: hidden;
+    animation: fadeDown 1s 0.8s ease both;
+  }
+  .hero-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+  .hero-cta:hover::before { transform: translateX(0); }
+  .hero-cta:hover { color: white; box-shadow: 0 8px 30px var(--glow); }
+  .hero-cta span { position: relative; z-index: 1; }
+
+  /* ── EQUIPMENT STRIP ── */
+  .equip-strip {
+    background: linear-gradient(135deg, var(--ink) 0%, var(--ink-mid) 100%);
+    padding: 60px 40px;
+    position: relative; overflow: hidden;
+  }
+  .equip-strip::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .equip-strip::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .equip-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 40px; align-items: center;
+  }
+  .equip-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 28px; color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+  .equip-subtitle {
+    font-family: 'Cinzel', serif;
+    font-size: 11px; letter-spacing: 4px;
+    color: rgba(255,255,255,0.4); text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .equip-list { list-style: none; }
+  .equip-list li {
+    color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.7;
+    padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .equip-list li::before {
+    content: '◆';
+    color: var(--gold); font-size: 8px; margin-top: 5px; flex-shrink: 0;
+  }
+  .equip-robots {
+    display: flex; gap: 24px; justify-content: center; align-items: center;
+  }
+  .robot-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 8px;
+    padding: 28px 24px; text-align: center; flex: 1;
+    position: relative; overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .robot-card:hover {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.08);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(201,168,76,0.15);
+  }
+  .robot-icon {
+    font-size: 52px; margin-bottom: 16px;
+    animation: robot-hover 3s ease-in-out infinite;
+  }
+  @keyframes robot-hover {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-8px); }
+  }
+  .robot-card:nth-child(2) .robot-icon { animation-delay: -1.5s; }
+  .robot-name {
+    font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 2px;
+    color: var(--gold-light); text-transform: uppercase;
+  }
+  .robot-role {
+    font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 4px;
+    letter-spacing: 1px;
+  }
+
+  /* ── SECTION COMMON ── */
+  section { position: relative; }
+
+  .section-header {
+    text-align: center;
+    padding: 80px 20px 50px;
+  }
+  .section-header .eyebrow {
+    font-family: 'Cinzel', serif; font-size: 11px;
+    letter-spacing: 5px; text-transform: uppercase;
+    color: var(--gold); display: block; margin-bottom: 16px;
+  }
+  .section-header h2 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(24px, 4vw, 48px);
+    background: linear-gradient(135deg, var(--ink) 0%, #4a3f8a 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2; margin-bottom: 20px;
+  }
+
+  /* ── PART CARDS ── */
+  .parts-grid {
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 24px 100px;
+    display: flex; flex-direction: column; gap: 80px;
+  }
+
+  .part-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px; align-items: center;
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .part-card.visible {
+    opacity: 1; transform: translateY(0);
+  }
+  .part-card.flip { direction: rtl; }
+  .part-card.flip > * { direction: ltr; }
+
+  .part-number {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 100px; line-height: 1;
+    background: linear-gradient(135deg, rgba(201,168,76,0.15) 0%, rgba(201,168,76,0.05) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: absolute; top: -20px; left: -10px;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .part-text { position: relative; padding: 0 20px; }
+
+  .part-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 3px;
+    text-transform: uppercase; color: white;
+    padding: 5px 14px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+  .tag-p1 { background: linear-gradient(135deg, #5bb8e8, #4ecdc4); }
+  .tag-p2 { background: linear-gradient(135deg, #f7a8b8, #f08080); }
+  .tag-p2a { background: linear-gradient(135deg, #f0d080, #c9a84c); }
+  .tag-p3 { background: linear-gradient(135deg, #b8a8f0, #7b6bd6); }
+  .tag-p4 { background: linear-gradient(135deg, #a8d8b0, #5bb87a); }
+  .tag-p4a { background: linear-gradient(135deg, #f0a870, #e07040); }
+
+  .part-title {
+    font-family: 'Cinzel', serif; font-size: 26px; font-weight: 700;
+    color: var(--ink); margin-bottom: 8px; line-height: 1.3;
+  }
+  .part-aim {
+    font-size: 13px; color: var(--gold); font-style: italic;
+    margin-bottom: 24px; letter-spacing: 0.5px;
+  }
+  .part-tasks { list-style: none; }
+  .part-tasks li {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
+    font-size: 14px; color: #444; line-height: 1.6;
+  }
+  .task-num {
+    flex-shrink: 0;
+    width: 24px; height: 24px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif; font-size: 10px; font-weight: 700;
+    color: white; margin-top: 1px;
+  }
+
+  /* ── ANIMATION CANVAS ── */
+  .part-visual {
+    border-radius: 16px;
+    background: linear-gradient(135deg, #f8f4ea 0%, #eef6fc 100%);
+    border: 1px solid rgba(201,168,76,0.25);
+    min-height: 300px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+
+  /* ornate corners */
+  .part-visual::before, .part-visual::after {
+    content: '';
+    position: absolute;
+    width: 30px; height: 30px;
+    border-color: var(--gold);
+    border-style: solid;
+    opacity: 0.5;
+  }
+  .part-visual::before { top: 10px; left: 10px; border-width: 2px 0 0 2px; }
+  .part-visual::after  { bottom: 10px; right: 10px; border-width: 0 2px 2px 0; }
+
+  .scene { width: 100%; height: 300px; position: relative; }
+
+  /* ── SCENE 1: Balloon Pop ── */
+  .s1-robot {
+    position: absolute; bottom: 75px; left: 20px;
+    font-size: 38px;
+    animation: s1-advance 4s ease-in-out infinite;
+  }
+  @keyframes s1-advance {
+    0%, 100% { left: 20px; }
+    60% { left: 55%; }
+    80% { left: 55%; }
+    90% { left: 55%; }
+  }
+  .s1-balloon {
+    position: absolute;
+    bottom: 100px; left: 55%;
+    font-size: 48px;
+    animation: s1-balloon 4s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+  @keyframes s1-balloon {
+    0%, 50% { transform: scale(1) rotate(-5deg); opacity: 1; }
+    55%      { transform: scale(1.1) rotate(5deg); }
+    65%      { transform: scale(0) rotate(15deg); opacity: 0; }
+    66%, 100% { transform: scale(0); opacity: 0; }
+  }
+  .s1-pop {
+    position: absolute;
+    bottom: 130px; left: 57%;
+    font-size: 28px;
+    opacity: 0;
+    animation: s1-pop 4s ease-in-out infinite;
+  }
+  @keyframes s1-pop {
+    0%, 60% { opacity: 0; transform: scale(0); }
+    65%     { opacity: 1; transform: scale(1.5); }
+    80%     { opacity: 0; transform: scale(2); }
+    100%    { opacity: 0; }
+  }
+  .s1-tag {
+    position: absolute; bottom: 80px; left: 52%;
+    font-size: 28px;
+    animation: s1-tag-bob 2s ease-in-out infinite;
+  }
+  @keyframes s1-tag-bob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+  }
+  .s1-stopzone {
+    position: absolute; bottom: 0; right: 10px;
+    width: 70px; height: 30px;
+    border: 2px dashed var(--gold);
+    border-radius: 4px; opacity: 0.5;
+  }
+  .s1-stars {
+    position: absolute; top: 10px; left: 0; right: 0;
+    display: flex; justify-content: space-around;
+  }
+  .s1-stars span { font-size: 14px; animation: twinkle 2s ease-in-out infinite; }
+  .s1-stars span:nth-child(2) { animation-delay: 0.5s; }
+  .s1-stars span:nth-child(3) { animation-delay: 1s; }
+  .s1-stars span:nth-child(4) { animation-delay: 1.5s; }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50%       { opacity: 1; transform: scale(1.3); }
+  }
+  .s1-label {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px;
+    color: var(--gold); text-transform: uppercase; white-space: nowrap;
+  }
+  .s1-apriltag-label {
+    position: absolute; bottom: 35px; left: 51%;
+    font-size: 9px; color: #888; font-family: 'Cinzel', serif;
+    letter-spacing: 1px; transform: translateX(-50%);
+  }
+
+  /* ── SCENE 2: Ball Throw ── */
+  .s2-robot {
+    position: absolute; bottom: 30px; left: 20px;
+    font-size: 38px;
+    animation: s2-move 5s ease-in-out infinite;
+  }
+  @keyframes s2-move {
+    0%, 100% { left: 20px; }
+    20% { left: 30%; }
+    40% { left: 30%; }
+    100% { left: 30%; }
+  }
+  .s2-ball {
+    position: absolute; bottom: 42px; left: 27%;
+    font-size: 24px;
+    animation: s2-throw 5s ease-in-out infinite;
+  }
+  @keyframes s2-throw {
+    0%, 30%  { left: 27%; bottom: 42px; opacity: 1; }
+    35%      { left: 30%; bottom: 42px; opacity: 1; }
+    50%      { left: 60%; bottom: 160px; opacity: 1; }
+    60%      { left: 68%; bottom: 90px; opacity: 1; }
+    65%      { left: 70%; bottom: 80px; opacity: 0; }
+    100%     { left: 27%; bottom: 42px; opacity: 1; }
+  }
+  .s2-villain {
+    position: absolute; bottom: 40px; right: 50px;
+    font-size: 42px;
+    animation: s2-villain 5s ease-in-out infinite;
+  }
+  @keyframes s2-villain {
+    0%, 60%  { transform: rotate(0deg); opacity: 1; }
+    65%      { transform: rotate(20deg); opacity: 0.8; }
+    70%      { transform: rotate(-60deg) translateX(20px); opacity: 0.5; }
+    75%      { transform: rotate(-90deg) translateX(30px); opacity: 0; }
+    80%, 100% { transform: rotate(0deg); opacity: 1; }
+  }
+  .s2-good1 { position: absolute; bottom: 40px; right: 20px; font-size: 36px; }
+  .s2-good2 { position: absolute; bottom: 40px; right: 100px; font-size: 36px; }
+  .s2-arc {
+    position: absolute; bottom: 60px; left: 30%;
+    width: 200px; height: 120px;
+    border: 2px dashed rgba(247,168,168,0.4);
+    border-bottom: none;
+    border-radius: 50% 50% 0 0;
+    animation: arc-pulse 5s ease-in-out infinite;
+  }
+  @keyframes arc-pulse {
+    0%, 25% { opacity: 0; }
+    35% { opacity: 1; }
+    65% { opacity: 0; }
+    100% { opacity: 0; }
+  }
+  .s2-label {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px;
+    color: var(--gold); text-transform: uppercase; white-space: nowrap;
+  }
+
+  /* ── SCENE 3: Slope ── */
+  .slope-bg {
+    position: absolute;
+    bottom: 0; left: 0; right: 75%;
+    height: 60px;
+    background: linear-gradient(135deg, #e8e0f8 0%, #d8d0f0 100%);
+    clip-path: polygon(100% 0, 100% 0%, 100% 100%, 0% 100%);
+  }
+  .slope-flat {
+    position: absolute;
+    bottom: 0; left: 25%;
+    width: 50%; height: 60px;
+    background: linear-gradient(180deg, #e8e0f8, #d0c8f0);
+  }
+  .s3-robot {
+    position: absolute;
+    font-size: 32px;
+    animation: s3-climb 4s ease-in-out infinite;
+    transform-origin: center bottom;
+  }
+  @keyframes s3-climb {
+    0%  { bottom: 50px; left: 25%; transform: rotate(0deg); }
+    40%  { bottom: 110px; left: 38%; transform: rotate(0deg); }
+    50%  { bottom: 100px; left: 50%; transform: rotate(-20deg); }
+    60% { bottom: 50px; left: 75%; transform: rotate(-20deg); }
+    80%   { bottom: 50px; left: 75%; transform: rotate(-20deg); }
+    100%  { bottom: 50px; left: 10%; transform: rotate(0deg); }
+  }
+
+  .cone { position: absolute; font-size: 24px; bottom: 55px; }
+  .cone1 { left: 35%; animation: cone-jiggle 3s 0.2s ease-in-out infinite; }
+  .cone2 { left: 45%; animation: cone-jiggle 3s 0.7s ease-in-out infinite; }
+  .cone3 { left: 55%; animation: cone-jiggle 3s 1.2s ease-in-out infinite; }
+  .cone4 { left: 65%; animation: cone-jiggle 3s 1.7s ease-in-out infinite; }
+  @keyframes cone-jiggle {
+    0%, 100% { transform: rotate(0deg); }
+    50%      { transform: rotate(-5deg); }
+  }
+  .s3-stopzone {
+    position: absolute; bottom: 55px; left: 5%;
+    width: 60px; height: 28px;
+    border: 2px dashed var(--violet);
+    border-radius: 4px; opacity: 0.6;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif; color: var(--violet); letter-spacing: 1px;
+  }
+  .s3-label {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px;
+    color: var(--gold); text-transform: uppercase; white-space: nowrap;
+  }
+  .s3-angle {
+    position: absolute; bottom: 10px; left: 15px;
+    font-family: 'Cinzel', serif; font-size: 11px; color: rgba(120,100,200,0.6);
+  }
+
+  /* ── SCENE 4: Block Sort ── */
+  .s4-robot {
+    position: absolute; bottom: 30px; left: 15px;
+    font-size: 38px;
+    animation: s4-roam 6s ease-in-out infinite;
+  }
+  @keyframes s4-roam {
+    0%   { left: 15px; bottom: 30px; }
+    20%  { left: 35%; bottom: 50px; }
+    40%  { left: 50%; bottom: 30px; }
+    60%  { left: 30%; bottom: 50px; }
+    80%  { left: 15px; bottom: 30px; }
+    100% { left: 15px; bottom: 30px; }
+  }
+  .block { position: absolute; font-size: 28px; }
+  .block-red1  { bottom: 60px; left: 35%; animation: b-float 3s 0s ease-in-out infinite; }
+  .block-red2  { bottom: 60px; left: 48%; animation: b-float 3s 0.8s ease-in-out infinite; }
+  .block-blue1 { bottom: 60px; left: 42%; animation: b-float 3s 1.4s ease-in-out infinite; }
+  .block-blue2 { bottom: 60px; left: 56%; animation: b-float 3s 0.3s ease-in-out infinite; }
+  @keyframes b-float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
+  .zone-red {
+    position: absolute; bottom: 20px; right: 10px;
+    width: 70px; height: 55px;
+    background: rgba(240,100,80,0.12);
+    border: 2px solid rgba(240,100,80,0.4);
+    border-radius: 6px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 9px; font-family: 'Cinzel', serif; letter-spacing: 1px; color: #d05040;
+    gap: 4px;
+  }
+  .zone-blue {
+    position: absolute; top: 20px; right: 10px;
+    width: 70px; height: 55px;
+    background: rgba(80,140,240,0.12);
+    border: 2px solid rgba(80,140,240,0.4);
+    border-radius: 6px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 9px; font-family: 'Cinzel', serif; letter-spacing: 1px; color: #3060c0;
+    gap: 4px;
+  }
+  .s4-label {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px;
+    color: var(--gold); text-transform: uppercase; white-space: nowrap;
+  }
+
+  /* ── OVERVIEW SECTION ── */
+  .overview-section {
+    background: linear-gradient(135deg, #f8f4ea 0%, #ffffff 50%, #f0f4ff 100%);
+    padding: 80px 24px;
+    position: relative; overflow: hidden;
+  }
+  .overview-section::before {
+    content: 'NYTC';
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 200px; color: rgba(201,168,76,0.04);
+    white-space: nowrap; pointer-events: none; user-select: none;
+  }
+  .timeline {
+    max-width: 800px; margin: 0 auto;
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .timeline-item {
+    display: grid; grid-template-columns: 60px 1fr;
+    gap: 24px; position: relative;
+    padding-bottom: 40px;
+  }
+  .timeline-item::after {
+    content: '';
+    position: absolute; top: 30px; left: 29px;
+    width: 2px; height: calc(100% - 30px);
+    background: linear-gradient(180deg, var(--gold) 0%, transparent 100%);
+  }
+  .timeline-item:last-child::after { display: none; }
+  .tl-dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    background: white;
+    box-shadow: 0 0 12px var(--glow);
+    margin-top: 6px;
+    position: relative; z-index: 1;
+    animation: dot-pulse 2s ease-in-out infinite;
+  }
+  @keyframes dot-pulse {
+    0%, 100% { box-shadow: 0 0 8px var(--glow); }
+    50%       { box-shadow: 0 0 20px var(--glow), 0 0 40px rgba(201,168,76,0.2); }
+  }
+  .tl-content h3 {
+    font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700;
+    color: var(--ink); margin-bottom: 4px;
+  }
+  .tl-content p {
+    font-size: 13px; color: #666; line-height: 1.7;
+  }
+  .tl-tag {
+    display: inline-block;
+    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 2px;
+    text-transform: uppercase; padding: 2px 10px;
+    border-radius: 2px; margin-bottom: 8px;
+    color: white;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    padding: 60px 40px;
+    text-align: center;
+    position: relative;
+  }
+  footer::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .footer-logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 22px; color: var(--gold-light);
+    margin-bottom: 12px;
+  }
+  .footer-sub {
+    font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 4px;
+    color: rgba(255,255,255,0.3); text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .footer-note {
+    font-size: 12px; color: rgba(255,255,255,0.2); line-height: 1.8;
+    max-width: 500px; margin: 0 auto;
+  }
+  .footer-stars {
+    display: flex; justify-content: center; gap: 16px;
+    margin-bottom: 28px;
+  }
+  .footer-stars span { color: var(--gold); font-size: 14px; opacity: 0.6; }
+
+  /* ── UTILS ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .ornament {
+    display: flex; align-items: center; gap: 16px;
+    justify-content: center; margin: 0 auto 40px;
+  }
+  .ornament-line {
+    flex: 1; max-width: 160px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold));
+  }
+  .ornament-line.r { background: linear-gradient(90deg, var(--gold), transparent); }
+  .ornament span {
+    font-size: 18px; color: var(--gold); opacity: 0.7;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .part-card { grid-template-columns: 1fr; gap: 32px; }
+    .part-card.flip { direction: ltr; }
+    .equip-inner { grid-template-columns: 1fr; }
+    .equip-robots { flex-direction: column; }
+    .hero h1 { font-size: 32px; }
+    .parts-grid { padding: 0 16px 60px; }
+  }
+
+  /* Scroll animation helper */
+  .fade-up {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* Magic sparkle */
+  .sparkle {
+    position: absolute;
+    pointer-events: none;
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: sparkle-burst 0.6s ease-out forwards;
+  }
+  @keyframes sparkle-burst {
+    0%   { transform: scale(0); opacity: 1; }
+    100% { transform: scale(3); opacity: 0; }
+  }
+
+  /* highlight band */
+  .highlight-band {
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4e 100%);
+    padding: 50px 40px;
+    margin: 0;
+    position: relative; overflow: hidden;
+  }
+  .highlight-band::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .highlight-band::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .hb-inner {
+    max-width: 900px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+    text-align: center;
+  }
+  .hb-stat .num {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 44px; color: var(--gold-light);
+    display: block; line-height: 1;
+    margin-bottom: 8px;
+  }
+  .hb-stat .lbl {
+    font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 3px;
+    color: rgba(255,255,255,0.4); text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Particles -->
+<div id="particles"></div>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero">
+  <div class="hero-bg-circle"></div>
+  <div class="hero-bg-circle"></div>
+  <div class="hero-bg-circle"></div>
+  <div class="hero-rune top-left">✦</div>
+  <div class="hero-rune top-right">⬡</div>
+  <div class="hero-rune bot-left">◆</div>
+  <div class="hero-rune bot-right">✦</div>
+
+  <div class="badge">Season 4 · 2026</div>
+  <h1>National Youth<br>Tech Championship</h1>
+  <div class="hero-sub">Championship Codex · Finals Edition</div>
+
+  <div class="hero-divider">
+    <div class="hero-divider-line"></div>
+    <span>Game Play &amp; Scoring</span>
+    <div class="hero-divider-line right"></div>
+  </div>
+
+  <div class="email"> <a class="email" href="mailto:stevenmab9@gmail.com">stevenmab9@gmail.com</a> </div>
+  <div class="email"> <a class="email" href="mailto:white.target2021@gmail.com">white.target2021@gmail.com</a> </div>
+  <div class="email"> <a class="email" href="mailto:akshar.maramreddy@gmail.com">akshar.maramreddy@gmail.com</a> </div>
+  <div class="email"> <a class="email" href="mailto:gavin.elroy.santoso.12345@gmail.com">gavin.elroy.santoso.12345@gmail.com</a> </div>
+
+  <p class="hero-desc">
+    Four enchanted trials await. Command your mechanical champions through the sacred challenge course — where image recognition, spatial algorithms, and robotic mastery shall determine the worthy.
+  </p>
+
+  <a href="#overview" class="hero-cta">
+    <span>⟡ Begin the Journey ⟡</span>
+  </a>
+</section>
+
+<!-- ══════════════ STATS BAND ══════════════ -->
+<div class="highlight-band">
+  <div class="hb-inner">
+    <div class="hb-stat">
+      <span class="num">2</span>
+      <span class="lbl">Robots per Team</span>
+    </div>
+    <div class="hb-stat">
+      <span class="num">4</span>
+      <span class="lbl">Challenge Parts</span>
+    </div>
+    <div class="hb-stat">
+      <span class="num">∞</span>
+      <span class="lbl">Glory Awaits</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ EQUIPMENT ══════════════ -->
+<div class="equip-strip">
+  <div class="equip-inner">
+    <div>
+      <div class="equip-subtitle">Armoury of the Champions</div>
+      <div class="equip-title">Equipment</div>
+      <ul class="equip-list">
+        <li>Programmable land vehicle with mechanical arm</li>
+        <li>Wheelbase: 23 cm · Battery: 3 hours moderate use</li>
+        <li>Camera: 720p RGB capture, 480p transmission</li>
+        <li>Omnidirectional Mecanum wheels</li>
+        <li>Python 3.13.12+ · Visual Studio Code IDE</li>
+        <li>Libraries: ugot · OpenCV-Python · Ultralytics</li>
+        <li>No modifications permitted to issued robots</li>
+      </ul>
+    </div>
+    <div class="equip-robots">
+      <div class="robot-card">
+        <div class="robot-icon">🤖</div>
+        <div class="robot-name">Engineer</div>
+        <div class="robot-role">Parts 2 · 3 · 4</div>
+      </div>
+      <div class="robot-card">
+        <div class="robot-icon">⚙️</div>
+        <div class="robot-name">Self-Balancing</div>
+        <div class="robot-role">Part 1</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ OVERVIEW ══════════════ -->
+<section id="overview" class="overview-section">
+  <div class="section-header">
+    <span class="eyebrow">The Sacred Course</span>
+    <h2>Challenge Overview</h2>
+  </div>
+  <div class="ornament">
+    <div class="ornament-line"></div>
+    <span>◆</span>
+    <div class="ornament-line r"></div>
+  </div>
+  <div class="timeline">
+    <div class="timeline-item fade-up">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-tag tag-p1">Part 1</div>
+        <h3>Balloon Vanquisher</h3>
+        <p>The Self-Balancing Robot — bearing a needle — ventures forth to recognise AprilTags, align with precision, and burst a balloon before halting within the sacred Stop Zone.</p>
+      </div>
+    </div>
+    <div class="timeline-item fade-up">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-tag tag-p2">Part 2</div>
+        <h3>The Villain's Reckoning</h3>
+        <p>The Engineer Robot grasps a red orb, advances to the Stop Line, recognises the villain's visage through facial recognition, and launches the orb — striking only the villain while sparing the innocent.</p>
+      </div>
+    </div>
+    <div class="timeline-item fade-up">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-tag tag-p3">Part 3</div>
+        <h3>Ascent of the Sage</h3>
+        <p>Guided by pose recognition, the Engineer Robot ascends a 30° slope, weaves through mystical cone obstacles, and claims the Stop Zone atop the stage.</p>
+      </div>
+    </div>
+    <div class="timeline-item fade-up">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-tag tag-p4">Part 4</div>
+        <h3>The Great Sorting</h3>
+        <p>Bearing a bulldozer blade, the Engineer Robot autonomously scours the arena — recognising red and blue blocks by colour, classifying them, and pushing each to its ordained zone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ PARTS DETAIL ══════════════ -->
+<section style="background: white; padding-top: 60px;">
+  <div class="section-header">
+    <span class="eyebrow">The Four Trials</span>
+    <h2>Gameplay Compendium</h2>
+  </div>
+  <div class="ornament">
+    <div class="ornament-line"></div>
+    <span>✦</span>
+    <div class="ornament-line r"></div>
+  </div>
+
+  <div class="parts-grid">
+
+    <!-- PART 1 -->
+    <div class="part-card" id="p1">
+      <div class="part-text">
+        <div class="part-number">1</div>
+        <div class="part-tag tag-p1">◆ Trial One</div>
+        <h2 class="part-title">Balloon Vanquisher</h2>
+        <p class="part-aim">Image recognition &amp; algorithm for positioning</p>
+        <ul class="part-tasks">
+          <li><div class="task-num">1</div>Self-Balancing Robot departs the Start Line, needle affixed</li>
+          <li><div class="task-num">2</div>Robot recognises the AprilTag marker</li>
+          <li><div class="task-num">3</div>Centralises on target and advances forward</li>
+          <li><div class="task-num">4</div>Needle pierces — balloon is vanquished</li>
+          <li><div class="task-num">5</div>Robot comes to rest within the Stop Zone</li>
+        </ul>
+      </div>
+      <div class="part-visual">
+        <div class="scene">
+          <div class="s1-label">Trial Arena · Part 1</div>
+          <div class="s1-stars">
+            <span>✦</span><span>⭑</span><span>✦</span><span>⭑</span>
+          </div>
+          <div class="s1-robot">🤖</div>
+          <div class="s1-tag">🏷️</div>
+          <div class="s1-balloon">🎈</div>
+          <div class="s1-pop">💥</div>
+          <div class="s1-apriltag-label">AprilTag</div>
+          <div class="s1-stopzone"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 2 -->
+    <div class="part-card flip" id="p2">
+      <div class="part-text">
+        <div class="part-number">2</div>
+        <div class="part-tag tag-p2">◆ Trial Two</div>
+        <h2 class="part-title">The Villain's Reckoning</h2>
+        <p class="part-aim">Object &amp; facial recognition, trajectory planning</p>
+        <ul class="part-tasks">
+          <li><div class="task-num">1</div>Engineer Robot advances into the arena</li>
+          <li><div class="task-num">2</div>Detects the red orb by object recognition</li>
+          <li><div class="task-num">3</div>Centralises and seizes the orb with its clamp</li>
+          <li><div class="task-num">4</div>Advances to the Stop Line and halts</li>
+          <li><div class="task-num">5</div>Identifies the Villain via facial recognition</li>
+          <li><div class="task-num">6</div>Aligns and launches the orb at the Villain</li>
+          <li><div class="task-num">7</div>Villain falls — Good Guys remain unharmed</li>
+        </ul>
+      </div>
+      <div class="part-visual">
+        <div class="scene">
+          <div class="s2-label">Trial Arena · Part 2</div>
+          <div class="s2-robot">🤖</div>
+          <div class="s2-ball">🔴</div>
+          <div class="s2-arc"></div>
+          <div class="s2-good1">😇</div>
+          <div class="s2-villain">😈</div>
+          <div class="s2-good2">😇</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 2A -->
+    <div class="part-card" id="p2a">
+      <div class="part-text" style="padding: 0 20px;">
+        <div style="position:relative;">
+          <div class="part-number" style="font-size:70px;">2A</div>
+          <div class="part-tag tag-p2a">◆ Interlude</div>
+          <h2 class="part-title">Free Navigation</h2>
+          <p class="part-aim">Use of any control for movement</p>
+          <ul class="part-tasks">
+            <li><div class="task-num">1</div>Teams may use a mobile app or any coded program to pilot the Engineer Robot freely through the challenge course</li>
+          </ul>
+        </div>
+      </div>
+      <div class="part-visual" style="background: linear-gradient(135deg,#fefae8,#fff8e8); min-height:200px; display:flex; align-items:center; justify-content:center;">
+        <div style="text-align:center;">
+          <div style="font-size:60px; animation: robot-hover 3s ease-in-out infinite;">🕹️</div>
+          <div style="font-family:'Cinzel',serif; font-size:12px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; margin-top:16px;">Free Command</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 3 -->
+    <div class="part-card flip" id="p3">
+      <div class="part-text">
+        <div class="part-number">3</div>
+        <div class="part-tag tag-p3">◆ Trial Three</div>
+        <h2 class="part-title">Ascent of the Sage</h2>
+        <p class="part-aim">Pose recognition &amp; obstacle avoidance</p>
+        <ul class="part-tasks">
+          <li><div class="task-num">1</div>Engineer Robot switches to pose recognition mode</li>
+          <li><div class="task-num">2</div>Climbs the 30° slope onto the stage</li>
+          <li><div class="task-num">3</div>Navigates between obstacle cones</li>
+          <li><div class="task-num">4</div>Halts within the elevated Stop Zone</li>
+        </ul>
+      </div>
+      <div class="part-visual">
+        <div class="scene">
+          <div class="slope-bg"></div>
+          <div class="slope-flat"></div>
+          <div class="s3-label">Trial Arena · Part 3</div>
+          <div class="cone cone1">🔺</div>
+          <div class="cone cone2">🔺</div>
+          <div class="cone cone3">🔺</div>
+          <div class="cone cone4">🔺</div>
+          <div class="s3-robot">🤖</div>
+          <div class="s3-stopzone">STOP</div>
+          <div class="s3-angle">30°</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 4 -->
+    <div class="part-card" id="p4">
+      <div class="part-text">
+        <div class="part-number">4</div>
+        <div class="part-tag tag-p4">◆ Trial Four</div>
+        <h2 class="part-title">The Great Sorting</h2>
+        <p class="part-aim">Colour recognition &amp; algorithm for positioning</p>
+        <ul class="part-tasks">
+          <li><div class="task-num">1</div>Engineer Robot — fitted with bulldozer blade — moves autonomously</li>
+          <li><div class="task-num">2</div>Detects red and blue blocks via colour recognition</li>
+          <li><div class="task-num">3</div>Classifies and gathers the blocks</li>
+          <li><div class="task-num">4</div>Pushes each block to its colour-matched Zone</li>
+        </ul>
+      </div>
+      <div class="part-visual">
+        <div class="scene">
+          <div class="s4-label">Trial Arena · Part 4</div>
+          <div class="s4-robot">🤖</div>
+          <div class="block block-red1">🟥</div>
+          <div class="block block-red2">🟥</div>
+          <div class="block block-blue1">🟦</div>
+          <div class="block block-blue2">🟦</div>
+          <div class="zone-blue">
+            <span>🟦</span>
+            <span>Blue Zone</span>
+          </div>
+          <div class="zone-red">
+            <span>🟥</span>
+            <span>Red Zone</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 4A -->
+    <div class="part-card flip" id="p4a">
+      <div class="part-text" style="padding: 0 20px;">
+        <div style="position:relative;">
+          <div class="part-number" style="font-size:70px;">4A</div>
+          <div class="part-tag tag-p4a">◆ Final Passage</div>
+          <h2 class="part-title">The Finish Line</h2>
+          <p class="part-aim">Use of any control for movement</p>
+          <ul class="part-tasks">
+            <li><div class="task-num">1</div>Teams use a mobile app or coded program to navigate the Engineer Robot across the Finishing Line — claiming the course's ultimate glory</li>
+          </ul>
+        </div>
+      </div>
+      <div class="part-visual" style="background:linear-gradient(135deg,#fff8f0,#fff0e8); min-height:200px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:16px;">
+        <div style="font-size:56px; animation: robot-hover 3s ease-in-out infinite;">🏁</div>
+        <div style="font-family:'Cinzel',serif; font-size:12px; letter-spacing:3px; color:#e07040; text-transform:uppercase;">Finishing Line</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer>
+  <div class="footer-logo">NYTC 2026</div>
+  <div class="footer-sub">National Youth Tech Championship · Season 4</div>
+  <div class="footer-stars">
+    <span>✦</span><span>◆</span><span>✦</span><span>◆</span><span>✦</span>
+  </div>
+  <p class="footer-note">
+    These rules are conceptual and subject to change. Organised by IMDA &amp; Infocomm Media Club · In partnership with Singapore Institute of Technology · In support of Smart Nation Singapore.
+    <br><br>Ver 1 · 22 May 2026
+  </p>
+</footer>
+
+<script>
+// ── Cursor ──
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top  = my + 'px';
+});
+function animRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+
+// Click sparkle
+document.addEventListener('click', e => {
+  for (let i = 0; i < 6; i++) {
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    const angle = (i / 6) * Math.PI * 2;
+    const dist  = 20 + Math.random() * 20;
+    s.style.left = (e.clientX + Math.cos(angle) * dist) + 'px';
+    s.style.top  = (e.clientY + Math.sin(angle) * dist) + 'px';
+    s.style.position = 'fixed';
+    s.style.zIndex = 9997;
+    s.style.background = ['#c9a84c','#f0d080','#a8d8f0','#b8a8f0'][Math.floor(Math.random()*4)];
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 600);
+  }
+});
+
+// ── Particles ──
+const pContainer = document.getElementById('particles');
+const pColors = ['rgba(201,168,76,', 'rgba(91,184,232,', 'rgba(184,168,240,', 'rgba(168,216,176,'];
+for (let i = 0; i < 40; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const size = 2 + Math.random() * 5;
+  const col  = pColors[Math.floor(Math.random() * pColors.length)];
+  p.style.cssText = `
+    width:${size}px; height:${size}px;
+    left:${Math.random()*100}%;
+    bottom:${-size}px;
+    background:${col}${0.4 + Math.random()*0.4});
+    animation-duration:${8 + Math.random()*14}s;
+    animation-delay:${Math.random()*12}s;
+  `;
+  pContainer.appendChild(p);
+}
+
+// ── Scroll Reveal ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.part-card, .fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
